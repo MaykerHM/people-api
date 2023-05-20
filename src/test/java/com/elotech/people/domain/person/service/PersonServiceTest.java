@@ -1,6 +1,5 @@
 package com.elotech.people.domain.person.service;
 
-import com.elotech.people.domain.contact.Contact;
 import com.elotech.people.domain.contact.dto.ContactDTO;
 import com.elotech.people.domain.contact.repository.ContactRepository;
 import com.elotech.people.domain.person.Person;
