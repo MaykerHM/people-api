@@ -1,6 +1,8 @@
 package com.elotech.people.domain.person.service;
 
 import com.elotech.people.domain.person.Person;
+import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.exception.PersonAlreadyExistsWithDocumentException;
 import com.elotech.people.domain.person.exception.PersonNotFoundByIdException;
 import com.elotech.people.domain.person.repository.PersonRepository;
 import com.elotech.people.domain.person.repository.PersonSearchCriteria;
@@ -31,5 +33,13 @@ public class PersonService {
 
     public Person findById(UUID id) {
         return personRepository.findById(id).orElseThrow(PersonNotFoundByIdException::new);
+    }
+
+    public Person save(PersonDTO personDto) {
+        Boolean alreadyExistsByDocument = personRepository.existsByDocument(personDto.getDocument().replaceAll("\\D", ""));
+        if (alreadyExistsByDocument) {
+            throw new PersonAlreadyExistsWithDocumentException();
+        }
+        return personRepository.save(Person.of(personDto.getName(), personDto.getDocument(), personDto.getBirthdate(), personDto.getContacts()));
     }
 }

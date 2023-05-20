@@ -2,6 +2,8 @@ package com.elotech.people.domain.person.service;
 
 import com.elotech.people.domain.contact.dto.ContactDTO;
 import com.elotech.people.domain.person.Person;
+import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.exception.PersonAlreadyExistsWithDocumentException;
 import com.elotech.people.domain.person.exception.PersonNotFoundByIdException;
 import com.elotech.people.domain.person.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
@@ -34,7 +36,7 @@ public class PersonServiceTest {
 
     String NAME = "Fake Name";
 
-    String DOCUMENT = "76562599024";
+    String VALID_DOCUMENT = "76562599024";
 
     LocalDate BIRTHDATE_START = LocalDate.parse("1990-01-01");
 
@@ -44,16 +46,19 @@ public class PersonServiceTest {
 
     ContactDTO contactDTO = ContactDTO.of("Fake Contact Name", "44999876656", "fakeemail@email.com");
 
-    Person person = Person.of(NAME, DOCUMENT, BIRTHDATE, List.of(contactDTO));
+    Person person = Person.of(NAME, VALID_DOCUMENT, BIRTHDATE, List.of(contactDTO));
 
     @Mock
     Pageable pageable;
+
+    @Mock
+    PersonDTO personDTO;
 
     @Test
     public void findAll_shouldFindAllWithSpecification() {
         Page<Person> response = new PageImpl<>(List.of(person));
         when(personRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(response);
-        personService.findAll(NAME, DOCUMENT, BIRTHDATE_START, BIRTHDATE_END, pageable);
+        personService.findAll(NAME, VALID_DOCUMENT, BIRTHDATE_START, BIRTHDATE_END, pageable);
 
         verify(personRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
@@ -75,6 +80,28 @@ public class PersonServiceTest {
         });
 
         assertEquals(exception.getMessage(), "Person not found by ID");
+    }
+
+    @Test
+    public void save_whenOk_shouldSave() {
+        when(personRepository.existsByDocument(anyString())).thenReturn(false);
+        when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
+        when(personDTO.getBirthdate()).thenReturn(BIRTHDATE);
+        personService.save(personDTO);
+
+        verify(personRepository).save(any());
+    }
+
+    @Test
+    public void save_whenAlreadyExistsByDocument_shouldThrow() {
+        when(personRepository.existsByDocument(anyString())).thenReturn(true);
+        when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
+
+        Exception exception = assertThrows(PersonAlreadyExistsWithDocumentException.class, () -> {
+            personService.save(personDTO);
+        });
+
+        assertEquals("Person already exists with this document", exception.getMessage());
     }
 
 }

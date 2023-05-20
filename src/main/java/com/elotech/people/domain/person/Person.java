@@ -3,6 +3,8 @@ package com.elotech.people.domain.person;
 
 import com.elotech.people.domain.contact.Contact;
 import com.elotech.people.domain.contact.dto.ContactDTO;
+import com.elotech.people.domain.person.exception.InvalidBirthdateException;
+import com.elotech.people.domain.person.exception.InvalidDocumentException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -36,17 +38,17 @@ public class Person {
     private LocalDate birthdate;
 
     @NotEmpty
-    @OneToMany(mappedBy="person", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Contact> contacts;
 
     public static Person of(String name, String document, LocalDate birthdate, List<ContactDTO> contacts) {
         Person person = new Person();
         String  onlyDigitsDocument= document.replaceAll("\\D", "");
         if (!isValidDocument(onlyDigitsDocument)) {
-            throw new IllegalArgumentException("Invalid Document");
+            throw new InvalidDocumentException();
         }
         if (!isValidBirthDate(birthdate)) {
-            throw new IllegalArgumentException("Invalid Birthdate");
+            throw new InvalidBirthdateException();
         }
         person.name = name;
         person.document = onlyDigitsDocument;
@@ -78,6 +80,10 @@ public class Person {
     }
 
     public static boolean isValidDocument(String document) {
+        if (document.length() != 11) {
+            return  false;
+        }
+
         var sum = 0;
         if (Objects.equals(document, "00000000000")) {
             return false;

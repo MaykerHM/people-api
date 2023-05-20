@@ -1,7 +1,12 @@
 package com.elotech.people.resource;
 
+import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.exception.InvalidBirthdateException;
+import com.elotech.people.domain.person.exception.InvalidDocumentException;
+import com.elotech.people.domain.person.exception.PersonAlreadyExistsWithDocumentException;
 import com.elotech.people.domain.person.exception.PersonNotFoundByIdException;
 import com.elotech.people.domain.person.service.PersonService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -41,6 +46,17 @@ public class PersonResource {
             return ResponseEntity.status(HttpStatus.OK).body(personService.findById(id));
         } catch (PersonNotFoundByIdException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> savePerson(@RequestBody @Valid PersonDTO personDTO) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDTO));
+        } catch (PersonAlreadyExistsWithDocumentException | InvalidBirthdateException | InvalidDocumentException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
         }
