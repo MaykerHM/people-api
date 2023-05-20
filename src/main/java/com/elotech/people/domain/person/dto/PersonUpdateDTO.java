@@ -1,24 +1,19 @@
 package com.elotech.people.domain.person.dto;
 
 import com.elotech.people.domain.contact.dto.ContactDTO;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
-public class PersonDTO {
+public class PersonUpdateDTO {
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String document;
 
-    @NotNull
     private LocalDate birthdate;
 
-    @NotEmpty
     private List<ContactDTO> contacts;
 
     public String getName() {
@@ -35,5 +30,9 @@ public class PersonDTO {
 
     public List<ContactDTO> getContacts() {
         return contacts;
+    }
+
+    public static  Boolean hasContacts(PersonUpdateDTO personUpdateDTO) {
+        return Objects.nonNull(personUpdateDTO.getContacts()) && !personUpdateDTO.getContacts().isEmpty();
     }
 }

@@ -1,8 +1,11 @@
 package com.elotech.people.domain.person.service;
 
+import com.elotech.people.domain.contact.Contact;
 import com.elotech.people.domain.contact.dto.ContactDTO;
+import com.elotech.people.domain.contact.repository.ContactRepository;
 import com.elotech.people.domain.person.Person;
 import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.dto.PersonUpdateDTO;
 import com.elotech.people.domain.person.exception.PersonAlreadyExistsWithDocumentException;
 import com.elotech.people.domain.person.exception.PersonNotFoundByIdException;
 import com.elotech.people.domain.person.repository.PersonRepository;
@@ -34,6 +37,9 @@ public class PersonServiceTest {
     @Mock
     private PersonRepository personRepository;
 
+    @Mock
+    private ContactRepository contactRepository;
+
     String NAME = "Fake Name";
 
     String VALID_DOCUMENT = "76562599024";
@@ -44,6 +50,10 @@ public class PersonServiceTest {
 
     LocalDate BIRTHDATE = LocalDate.parse("1991-08-14");
 
+    String FIXED_NAME = "Fixed Fake Name";
+
+    LocalDate FIXED_BIRTHDATE = LocalDate.parse("1992-08-14");
+
     ContactDTO contactDTO = ContactDTO.of("Fake Contact Name", "44999876656", "fakeemail@email.com");
 
     Person person = Person.of(NAME, VALID_DOCUMENT, BIRTHDATE, List.of(contactDTO));
@@ -53,6 +63,9 @@ public class PersonServiceTest {
 
     @Mock
     PersonDTO personDTO;
+
+    @Mock
+    PersonUpdateDTO personUpdateDTO;
 
     @Test
     public void findAll_shouldFindAllWithSpecification() {
@@ -83,7 +96,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void save_whenOk_shouldSave() {
+    public void create_whenOk_shouldCreate() {
         when(personRepository.existsByDocument(anyString())).thenReturn(false);
         when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
         when(personDTO.getBirthdate()).thenReturn(BIRTHDATE);
@@ -93,7 +106,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void save_whenAlreadyExistsByDocument_shouldThrow() {
+    public void create_whenAlreadyExistsByDocument_shouldThrow() {
         when(personRepository.existsByDocument(anyString())).thenReturn(true);
         when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
 
@@ -102,6 +115,28 @@ public class PersonServiceTest {
         });
 
         assertEquals("Person already exists with this document", exception.getMessage());
+    }
+
+    @Test
+    public void update_whenOk_shouldUpdate() {
+        Person updatedPerson = Person.update(person, personUpdateDTO);
+
+        ContactDTO contactDTO = ContactDTO.of("Fake Contact Name One", "449994564654", "fake@email.com");
+
+        when(personRepository.findById(any(UUID.class))).thenReturn(Optional.of(person));
+        when(personUpdateDTO.getName()).thenReturn(FIXED_NAME);
+        when(personUpdateDTO.getDocument()).thenReturn(null);
+        when(personUpdateDTO.getBirthdate()).thenReturn(FIXED_BIRTHDATE);
+        when(personUpdateDTO.getContacts()).thenReturn(List.of(contactDTO));
+        when(personRepository.save(updatedPerson)).thenReturn(updatedPerson);
+        Person response = personService.update(personUpdateDTO, UUID.randomUUID());
+
+        verify(personRepository).save(any());
+        verify(contactRepository).deleteAll(any());
+        assertEquals(FIXED_NAME, response.getName());
+        assertEquals(person.getDocument(), response.getDocument());
+        assertEquals(FIXED_BIRTHDATE, response.getBirthdate());
+        assertEquals(person.getContacts(), response.getContacts());
     }
 
 }

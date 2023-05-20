@@ -1,6 +1,7 @@
 package com.elotech.people.resource;
 
 import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.dto.PersonUpdateDTO;
 import com.elotech.people.domain.person.exception.InvalidBirthdateException;
 import com.elotech.people.domain.person.exception.InvalidDocumentException;
 import com.elotech.people.domain.person.exception.PersonAlreadyExistsWithDocumentException;
@@ -56,6 +57,17 @@ public class PersonResource {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(personDTO));
         } catch (PersonAlreadyExistsWithDocumentException | InvalidBirthdateException | InvalidDocumentException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePerson(@PathVariable(value = "id") UUID id, @RequestBody @Valid PersonUpdateDTO personDTO) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(personService.update(personDTO, id));
+        } catch (InvalidBirthdateException | InvalidDocumentException | PersonNotFoundByIdException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         } catch (Exception err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
