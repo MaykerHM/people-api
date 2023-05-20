@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +32,25 @@ public class Person {
 
     @NotEmpty
     @OneToMany(mappedBy="person", fetch = FetchType.LAZY)
-    private Set<Contact> contacts;
+    private List<Contact> contacts;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
 }
