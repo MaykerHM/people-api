@@ -45,6 +45,9 @@ public class Person {
         if (!isValidDocument(onlyDigitsDocument)) {
             throw new IllegalArgumentException("Invalid Document");
         }
+        if (!isValidBirthDate(birthdate)) {
+            throw new IllegalArgumentException("Invalid Birthdate");
+        }
         person.name = name;
         person.document = onlyDigitsDocument;
         person.birthdate = birthdate;
@@ -104,5 +107,9 @@ public class Person {
         }
 
         return remainder == parseInt(document.substring(10, 11));
+    }
+
+    public static Boolean isValidBirthDate(LocalDate birthdate) {
+        return birthdate.isBefore(LocalDate.now());
     }
 }
