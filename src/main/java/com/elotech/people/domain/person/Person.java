@@ -2,6 +2,7 @@ package com.elotech.people.domain.person;
 
 
 import com.elotech.people.domain.contact.Contact;
+import com.elotech.people.domain.contact.dto.ContactDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="PERSON")
@@ -19,20 +21,31 @@ public class Person {
     private UUID id;
 
     @NotNull
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String name;
 
     @NotNull
-    @Column(nullable = false, length = 11)
+    @Column(length = 11)
     private String document;
 
     @NotNull
-    @Column(nullable = false)
+    @Column
     private LocalDate birthdate;
 
     @NotEmpty
     @OneToMany(mappedBy="person", fetch = FetchType.LAZY)
     private List<Contact> contacts;
+
+    public static Person of(String name, String document, LocalDate birthdate, List<ContactDTO> contacts) {
+        Person person = new Person();
+        person.name = name;
+        person.document = document;
+        person.birthdate = birthdate;
+        person.contacts = contacts.stream()
+                .map(contactDTO -> Contact.of(contactDTO, person))
+                .collect(Collectors.toList());
+        return person;
+    }
 
     public UUID getId() {
         return id;
