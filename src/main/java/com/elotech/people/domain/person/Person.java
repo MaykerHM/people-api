@@ -9,8 +9,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.lang.Integer.parseInt;
 
 @Entity
 @Table(name="PERSON")
@@ -38,8 +41,12 @@ public class Person {
 
     public static Person of(String name, String document, LocalDate birthdate, List<ContactDTO> contacts) {
         Person person = new Person();
+        String  onlyDigitsDocument= document.replaceAll("\\D", "");
+        if (!isValidDocument(onlyDigitsDocument)) {
+            throw new IllegalArgumentException("Invalid Document");
+        }
         person.name = name;
-        person.document = document;
+        person.document = onlyDigitsDocument;
         person.birthdate = birthdate;
         person.contacts = contacts.stream()
                 .map(contactDTO -> Contact.of(contactDTO, person))
@@ -65,5 +72,37 @@ public class Person {
 
     public List<Contact> getContacts() {
         return contacts;
+    }
+
+    public static boolean isValidDocument(String document) {
+        var sum = 0;
+        if (Objects.equals(document, "00000000000")) {
+            return false;
+        }
+
+        for (int i = 1; i <= 9; i++) {
+            sum = sum + parseInt(document.substring(i - 1, i)) * (11 - i);
+        }
+
+        var remainder = (sum * 10) % 11;
+        if (remainder == 10) {
+            remainder = 0;
+        }
+
+        if (remainder != parseInt(document.substring(9, 10))) {
+            return false;
+        }
+
+        sum = 0;
+        for (int i = 1; i <= 10; i++) {
+            sum = sum + parseInt(document.substring(i - 1, i)) * (12 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if (remainder == 10) {
+            remainder = 0;
+        }
+
+        return remainder == parseInt(document.substring(10, 11));
     }
 }
