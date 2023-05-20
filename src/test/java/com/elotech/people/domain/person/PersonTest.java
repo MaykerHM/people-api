@@ -1,6 +1,5 @@
 package com.elotech.people.domain.person;
 
-import com.elotech.people.domain.contact.Contact;
 import com.elotech.people.domain.contact.dto.ContactDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
