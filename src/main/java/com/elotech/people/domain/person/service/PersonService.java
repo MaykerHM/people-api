@@ -35,7 +35,7 @@ public class PersonService {
         return personRepository.findById(id).orElseThrow(PersonNotFoundByIdException::new);
     }
 
-    public Person save(PersonDTO personDto) {
+    public Person create(PersonDTO personDto) {
         Boolean alreadyExistsByDocument = personRepository.existsByDocument(personDto.getDocument().replaceAll("\\D", ""));
         if (alreadyExistsByDocument) {
             throw new PersonAlreadyExistsWithDocumentException();

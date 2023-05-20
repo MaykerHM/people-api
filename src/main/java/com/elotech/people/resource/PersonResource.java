@@ -52,9 +52,9 @@ public class PersonResource {
     }
 
     @PostMapping
-    public ResponseEntity<Object> savePerson(@RequestBody @Valid PersonDTO personDTO) {
+    public ResponseEntity<Object> createPerson(@RequestBody @Valid PersonDTO personDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(personDTO));
         } catch (PersonAlreadyExistsWithDocumentException | InvalidBirthdateException | InvalidDocumentException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         } catch (Exception err) {

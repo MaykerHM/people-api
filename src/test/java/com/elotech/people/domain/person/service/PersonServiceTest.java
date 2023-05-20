@@ -87,7 +87,7 @@ public class PersonServiceTest {
         when(personRepository.existsByDocument(anyString())).thenReturn(false);
         when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
         when(personDTO.getBirthdate()).thenReturn(BIRTHDATE);
-        personService.save(personDTO);
+        personService.create(personDTO);
 
         verify(personRepository).save(any());
     }
@@ -98,7 +98,7 @@ public class PersonServiceTest {
         when(personDTO.getDocument()).thenReturn(VALID_DOCUMENT);
 
         Exception exception = assertThrows(PersonAlreadyExistsWithDocumentException.class, () -> {
-            personService.save(personDTO);
+            personService.create(personDTO);
         });
 
         assertEquals("Person already exists with this document", exception.getMessage());
