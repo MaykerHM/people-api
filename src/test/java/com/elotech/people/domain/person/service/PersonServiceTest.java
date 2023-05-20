@@ -2,6 +2,7 @@ package com.elotech.people.domain.person.service;
 
 import com.elotech.people.domain.contact.dto.ContactDTO;
 import com.elotech.people.domain.person.Person;
+import com.elotech.people.domain.person.exception.PersonNotFoundByIdException;
 import com.elotech.people.domain.person.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +14,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import org.springframework.data.domain.Pageable;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
 public class PersonServiceTest {
@@ -51,4 +57,24 @@ public class PersonServiceTest {
 
         verify(personRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
+
+    @Test
+    public void findById_whenOk_shouldReturnPerson() {
+        when(personRepository.findById(any(UUID.class))).thenReturn(Optional.of(person));
+        personService.findById(UUID.randomUUID());
+
+        verify(personRepository, times(1)).findById(any(UUID.class));
+    }
+
+    @Test
+    public void findById_whenNotExistsPerson_shouldThrow() {
+        when(personRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(PersonNotFoundByIdException.class, () -> {
+            personService.findById(UUID.randomUUID());
+        });
+
+        assertEquals(exception.getMessage(), "Person not found by ID");
+    }
+
 }
