@@ -10,15 +10,12 @@ public class ContactUpdateDTO {
     @NotNull
     private UUID id;
 
-    @NotNull
     @Size(max = 50)
     private String name;
 
-    @NotNull
     @Size(max = 20)
     private String phoneNumber;
 
-    @NotNull
     @Size(max = 70)
     private String email;
 

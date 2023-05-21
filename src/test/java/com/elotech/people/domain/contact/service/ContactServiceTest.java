@@ -45,13 +45,21 @@ public class ContactServiceTest {
 
     LocalDate BIRTHDATE = LocalDate.parse("1991-08-14");
 
-    ContactDTO contactDTO = ContactDTO.of("Fake Contact Name", "44999876656", "fakeemail@email.com");
+    String CONTACT_NAME_ONE = "Fake Contact Name One";
 
-    ContactDTO contactDTOTwo = ContactDTO.of("Fake Contact Name Two", "44945236656", "fakeemailtwo@email.com");
+    String CONTACT_NAME_TWO = "Fake Contact Name Two";
 
-    ContactCreateDTO contactCreateDTO = ContactCreateDTO.of(UUID.randomUUID(), "Fake Contact Name Two", "44945236656", "fakeemailtwo@email.com");
+    String EMAIL_ONE = "fakeemailone@email.com";
 
-    ContactUpdateDTO contactUpdateDTO = ContactUpdateDTO.of(UUID.randomUUID(), "Fake Contact Name Two", "44945236656", "fakeemailtwo@email.com");
+    String EMAIL_TWO = "fakeemailtwo@email.com";
+
+    ContactDTO contactDTO = ContactDTO.of(CONTACT_NAME_ONE, "44999876656", EMAIL_ONE);
+
+    ContactDTO contactDTOTwo = ContactDTO.of(CONTACT_NAME_TWO, "44945236656", EMAIL_TWO);
+
+    ContactCreateDTO contactCreateDTO = ContactCreateDTO.of(UUID.randomUUID(), CONTACT_NAME_TWO, "44945236656", EMAIL_TWO);
+
+    ContactUpdateDTO contactUpdateDTO = ContactUpdateDTO.of(UUID.randomUUID(), CONTACT_NAME_TWO, null, EMAIL_TWO);
 
     Person person = Person.of(NAME, VALID_DOCUMENT, BIRTHDATE, List.of(contactDTO));
 
@@ -80,9 +88,16 @@ public class ContactServiceTest {
         Contact contact = Contact.of(contactDTO, person);
         when(contactRepository.findById(any(UUID.class))).thenReturn(Optional.of(contact));
 
-        contactService.update(contactUpdateDTO);
+        Contact updatedContact = Contact.update(contact, contactUpdateDTO);
+
+        when(contactRepository.save(updatedContact)).thenReturn(updatedContact);
+
+        Contact response = contactService.update(contactUpdateDTO);
 
         verify(contactRepository).save(any(Contact.class));
+        assertEquals(contactUpdateDTO.getName(), response.getName());
+        assertEquals(contactUpdateDTO.getEmail(), response.getEmail());
+        assertEquals(contact.getPhoneNumber(), response.getPhoneNumber());
     }
 
     @Test
