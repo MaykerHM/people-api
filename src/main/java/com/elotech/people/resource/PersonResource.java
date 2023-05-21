@@ -1,6 +1,7 @@
 package com.elotech.people.resource;
 
 import com.elotech.people.domain.person.dto.PersonDTO;
+import com.elotech.people.domain.person.dto.PersonFindByIdDTO;
 import com.elotech.people.domain.person.dto.PersonUpdateDTO;
 import com.elotech.people.domain.person.exception.InvalidBirthdateException;
 import com.elotech.people.domain.person.exception.InvalidDocumentException;
@@ -44,7 +45,7 @@ public class PersonResource {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable(value = "id") UUID id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(personService.findById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(PersonFindByIdDTO.of(personService.findById(id)));
         } catch (PersonNotFoundByIdException err) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err.getMessage());
         } catch (Exception err) {

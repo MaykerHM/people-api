@@ -6,6 +6,7 @@ import com.elotech.people.domain.contact.dto.ContactDTO;
 import com.elotech.people.domain.person.dto.PersonUpdateDTO;
 import com.elotech.people.domain.person.exception.InvalidBirthdateException;
 import com.elotech.people.domain.person.exception.InvalidDocumentException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -39,6 +40,7 @@ public class Person {
     private LocalDate birthdate;
 
     @NotEmpty
+    @JsonIgnore
     @OneToMany(mappedBy="person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Contact> contacts;
 
