@@ -52,9 +52,6 @@ public class PersonService {
     @Transactional
     public Person update(PersonUpdateDTO personDto, UUID id) {
         Person person = this.findById(id);
-        if(PersonUpdateDTO.hasContacts(personDto)) {
-            contactRepository.deleteAll(person.getContacts());
-        }
         Person updatedPerson = Person.update(person, personDto);
 
         return personRepository.save(updatedPerson);

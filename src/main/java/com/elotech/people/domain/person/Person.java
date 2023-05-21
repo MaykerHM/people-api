@@ -79,11 +79,6 @@ public class Person {
             }
             person.birthdate = personDTO.getBirthdate();
         }
-        if (PersonUpdateDTO.hasContacts(personDTO)) {
-            person.contacts = personDTO.getContacts().stream()
-                    .map(contactDTO -> Contact.of(contactDTO, person))
-                    .collect(Collectors.toList());
-        }
         return person;
     }
 

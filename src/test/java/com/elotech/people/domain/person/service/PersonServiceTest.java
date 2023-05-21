@@ -120,22 +120,17 @@ public class PersonServiceTest {
     public void update_whenOk_shouldUpdate() {
         Person updatedPerson = Person.update(person, personUpdateDTO);
 
-        ContactDTO contactDTO = ContactDTO.of("Fake Contact Name One", "449994564654", "fake@email.com");
-
         when(personRepository.findById(any(UUID.class))).thenReturn(Optional.of(person));
         when(personUpdateDTO.getName()).thenReturn(FIXED_NAME);
         when(personUpdateDTO.getDocument()).thenReturn(null);
         when(personUpdateDTO.getBirthdate()).thenReturn(FIXED_BIRTHDATE);
-        when(personUpdateDTO.getContacts()).thenReturn(List.of(contactDTO));
         when(personRepository.save(updatedPerson)).thenReturn(updatedPerson);
         Person response = personService.update(personUpdateDTO, UUID.randomUUID());
 
         verify(personRepository).save(any());
-        verify(contactRepository).deleteAll(any());
         assertEquals(FIXED_NAME, response.getName());
         assertEquals(person.getDocument(), response.getDocument());
         assertEquals(FIXED_BIRTHDATE, response.getBirthdate());
-        assertEquals(person.getContacts(), response.getContacts());
     }
 
     @Test
