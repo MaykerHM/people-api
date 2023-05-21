@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/contact")
+@RequestMapping("/contacts")
 public class ContactResource {
     final ContactService contactService;
 
