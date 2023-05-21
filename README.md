@@ -104,5 +104,8 @@ Example URI:
 
 ---
 
+#### Links for Testing People API
+
 Postman exported: https://bit.ly/3Oxt1my
+
 People API URL: https://people-api-horm.onrender.com
