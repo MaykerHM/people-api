@@ -103,3 +103,6 @@ Example URI:
 ```
 
 ---
+
+Postman exported: https://bit.ly/3Oxt1my
+People API URL: https://people-api-horm.onrender.com
