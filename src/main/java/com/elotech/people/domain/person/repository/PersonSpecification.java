@@ -18,7 +18,8 @@ public class PersonSpecification {
             }
 
             if(criteria.hasDocument()) {
-                predicates.add(cb.equal(root.get("document"), criteria.getDocument()));
+                String documentOnlyDigits = criteria.getDocument().replaceAll("\\D", "");
+                predicates.add(cb.equal(root.get("document"), documentOnlyDigits));
             }
 
             Predicate greaterThanOrEqualToBirthdateStart = cb.greaterThanOrEqualTo(root.get("birthdate"), criteria.getBirthdateStart());

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -50,9 +51,18 @@ public class Contact {
     }
 
     public static Contact update(Contact contact, ContactUpdateDTO contactUpdateDTO) {
-        contact.name = contactUpdateDTO.getName();
-        contact.email = contactUpdateDTO.getEmail();
-        contact.phoneNumber = contactUpdateDTO.getPhoneNumber();
+        if (Objects.nonNull(contactUpdateDTO.getName())) {
+            contact.name = contactUpdateDTO.getName();
+        }
+        if (Objects.nonNull(contactUpdateDTO.getEmail())) {
+            if(!Contact.isValidEmail(contactUpdateDTO.getEmail())) {
+                throw new InvalidEmailException();
+            }
+            contact.email = contactUpdateDTO.getEmail();
+        }
+        if (Objects.nonNull(contactUpdateDTO.getPhoneNumber())) {
+            contact.phoneNumber = contactUpdateDTO.getPhoneNumber();
+        }
         return contact;
     }
 
