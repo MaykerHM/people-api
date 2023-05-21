@@ -103,3 +103,15 @@ Example URI:
 ```
 
 ---
+
+#### Info for Testing People API
+
+Postman exported: https://bit.ly/3Oxt1my
+
+People API URL: https://people-api-horm.onrender.com
+
+Maven 3.8.5
+
+Java jdk-17
+
+Spring boot 3.1.0
