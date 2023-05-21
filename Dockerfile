@@ -9,6 +9,6 @@ RUN mvn clean package -DskipTests
 # Package stage
 #
 FROM openjdk:17
-COPY --from=build /target/people.jar people.jar
+COPY --from=build /target/people-0.0.1-SNAPSHOT.jar people-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","people.jar"]
+ENTRYPOINT ["java","-jar","people-0.0.1-SNAPSHOT.jar"]
