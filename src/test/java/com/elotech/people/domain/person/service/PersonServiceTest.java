@@ -121,11 +121,12 @@ public class PersonServiceTest {
         Person updatedPerson = Person.update(person, personUpdateDTO);
 
         when(personRepository.findById(any(UUID.class))).thenReturn(Optional.of(person));
+        when(personUpdateDTO.getId()).thenReturn(UUID.randomUUID());
         when(personUpdateDTO.getName()).thenReturn(FIXED_NAME);
         when(personUpdateDTO.getDocument()).thenReturn(null);
         when(personUpdateDTO.getBirthdate()).thenReturn(FIXED_BIRTHDATE);
         when(personRepository.save(updatedPerson)).thenReturn(updatedPerson);
-        Person response = personService.update(personUpdateDTO, UUID.randomUUID());
+        Person response = personService.update(personUpdateDTO);
 
         verify(personRepository).save(any());
         assertEquals(FIXED_NAME, response.getName());

@@ -64,10 +64,10 @@ public class PersonResource {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePerson(@PathVariable(value = "id") UUID id, @RequestBody @Valid PersonUpdateDTO personDTO) {
+    @PutMapping
+    public ResponseEntity<Object> updatePerson(@RequestBody @Valid PersonUpdateDTO personDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(personService.update(personDTO, id));
+            return ResponseEntity.status(HttpStatus.OK).body(personService.update(personDTO));
         } catch (InvalidBirthdateException | InvalidDocumentException | PersonNotFoundByIdException err) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
         } catch (Exception err) {

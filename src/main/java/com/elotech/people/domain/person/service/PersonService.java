@@ -50,8 +50,8 @@ public class PersonService {
     }
 
     @Transactional
-    public Person update(PersonUpdateDTO personDto, UUID id) {
-        Person person = this.findById(id);
+    public Person update(PersonUpdateDTO personDto) {
+        Person person = this.findById(personDto.getId());
         Person updatedPerson = Person.update(person, personDto);
 
         return personRepository.save(updatedPerson);
