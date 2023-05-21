@@ -138,4 +138,11 @@ public class PersonServiceTest {
         assertEquals(person.getContacts(), response.getContacts());
     }
 
+    @Test
+    public void delete_whenOk_shouldDelete() {
+        when(personRepository.findById(any(UUID.class))).thenReturn(Optional.of(person));
+        personService.delete(UUID.randomUUID());
+        verify( personRepository).delete(person);
+    }
+
 }

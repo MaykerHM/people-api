@@ -1,6 +1,5 @@
 package com.elotech.people.domain.person.service;
 
-import com.elotech.people.domain.contact.Contact;
 import com.elotech.people.domain.contact.repository.ContactRepository;
 import com.elotech.people.domain.person.Person;
 import com.elotech.people.domain.person.dto.PersonDTO;
@@ -17,10 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -44,6 +40,7 @@ public class PersonService {
         return personRepository.findById(id).orElseThrow(PersonNotFoundByIdException::new);
     }
 
+    @Transactional
     public Person create(PersonDTO personDto) {
         Boolean alreadyExistsByDocument = personRepository.existsByDocument(personDto.getDocument().replaceAll("\\D", ""));
         if (alreadyExistsByDocument) {
@@ -61,5 +58,11 @@ public class PersonService {
         Person updatedPerson = Person.update(person, personDto);
 
         return personRepository.save(updatedPerson);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        Person person = this.findById(id);
+        personRepository.delete(person);
     }
 }

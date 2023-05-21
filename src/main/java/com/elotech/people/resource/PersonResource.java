@@ -73,4 +73,16 @@ public class PersonResource {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletePerson(@PathVariable(value = "id") UUID id) {
+        try {
+            personService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Person deleted successfully!");
+        } catch (PersonNotFoundByIdException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err.getMessage());
+        }
+    }
 }
