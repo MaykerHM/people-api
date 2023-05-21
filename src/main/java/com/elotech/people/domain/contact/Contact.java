@@ -1,6 +1,8 @@
 package com.elotech.people.domain.contact;
 
 import com.elotech.people.domain.contact.dto.ContactDTO;
+import com.elotech.people.domain.contact.dto.ContactUpdateDTO;
+import com.elotech.people.domain.contact.exception.InvalidEmailException;
 import com.elotech.people.domain.person.Person;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -37,13 +39,20 @@ public class Contact {
 
     public static Contact of (ContactDTO dto, Person person) {
         Contact contact = new Contact();
-        if(!contact.isValidEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Invalid Email");
+        if(!Contact.isValidEmail(dto.getEmail())) {
+            throw new InvalidEmailException();
         }
         contact.name = dto.getName();
         contact.phoneNumber = dto.getPhoneNumber();
         contact.email = dto.getEmail();
         contact.person = person;
+        return contact;
+    }
+
+    public static Contact update(Contact contact, ContactUpdateDTO contactUpdateDTO) {
+        contact.name = contactUpdateDTO.getName();
+        contact.email = contactUpdateDTO.getEmail();
+        contact.phoneNumber = contactUpdateDTO.getPhoneNumber();
         return contact;
     }
 

@@ -3,7 +3,12 @@ package com.elotech.people.domain.contact.dto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class ContactDTO {
+import java.util.UUID;
+
+public class ContactCreateDTO {
+
+    @NotNull
+    private UUID personId;
 
     @NotNull
     @Size(max = 50)
@@ -17,20 +22,17 @@ public class ContactDTO {
     @Size(max = 70)
     private String email;
 
-    public static ContactDTO of(String name, String phoneNumber, String email) {
-        ContactDTO dto = new ContactDTO();
+    public static ContactCreateDTO of(UUID personId, String name, String phoneNumber, String email) {
+        ContactCreateDTO dto = new ContactCreateDTO();
+        dto.personId = personId;
         dto.name = name;
         dto.phoneNumber = phoneNumber;
         dto.email = email;
         return dto;
     }
 
-    public static ContactDTO of(ContactCreateDTO contactCreateDTO) {
-        ContactDTO dto = new ContactDTO();
-        dto.name = contactCreateDTO.getName();
-        dto.phoneNumber = contactCreateDTO.getPhoneNumber();
-        dto.email = contactCreateDTO.getEmail();
-        return dto;
+    public UUID getPersonId() {
+        return personId;
     }
 
     public String getName() {
