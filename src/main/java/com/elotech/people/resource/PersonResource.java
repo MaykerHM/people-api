@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/persons")
 public class PersonResource {
     final PersonService personService;
 
